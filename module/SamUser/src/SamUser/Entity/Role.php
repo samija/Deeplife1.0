@@ -11,11 +11,15 @@ namespace SamUser\Entity;
 use BjyAuthorize\Acl\HierarchicalRoleInterface;
 use Doctrine\ORM\Mapping as ORM;
 
+use Zend\Form\Annotation as ZFA;
+
 /**
  * An example entity that represents a role.
  *
  * @ORM\Entity
  * @ORM\Table(name="role")
+ *
+ * @ZFA\Name("role-form")
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
@@ -26,20 +30,43 @@ class Role implements HierarchicalRoleInterface
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @ZFA\Exclude()
      */
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, unique=true, nullable=true)
+     *
+     * @ZFA\Filter({"name":"StringTrim"})
+     * @ZFA\Required(true)
+     * @ZFA\Validator({"name":"StringLength", "options":{"min":1, "max":255}})
+     * @ZFA\Attributes({"type":"text"})
+     * @ZFA\Options({"label":"Name"})
      */
     protected $roleId;
 
     /**
      * @var Role
      * @ORM\ManyToOne(targetEntity="SamUser\Entity\Role")
+     *
+     * @ZFA\Attributes({"readonly":"false"})
+     * @ZFA\Required(false)
+     * @ZFA\Type("DoctrineORMModule\Form\Element\EntitySelect")
+     * @ZFA\Options({"label":"Parent", "target_class":"SamUser\Entity\Role", "property":"roleId", "empty_option":"Choose a parent"})
      */
     protected $parent;
+
+
+    public function toArray()
+    {
+        return array(
+            'id' => $this->getId(),
+            'roleId' => $this->getRoleId(),
+            'parent' => isset($this->parent) ? $this->getParent()->toArray() : $this->getParent(),
+        );
+    }
 
     /**
      * Get the id.
@@ -98,7 +125,7 @@ class Role implements HierarchicalRoleInterface
     /**
      * Set the parent role.
      *
-     * @param Role $parent
+     * @param Role $role
      *
      * @return void
      */

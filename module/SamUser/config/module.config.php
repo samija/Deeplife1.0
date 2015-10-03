@@ -1,5 +1,77 @@
 <?php
 return array(
+    'router' => array(
+        'routes' => array(
+            'users' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/users',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'SamUser\Controller',
+                        'controller'    => 'Users',
+                        'action'        => 'index',
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'default' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/[:action[/:id]]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            'roles' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/roles',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'SamUser\Controller',
+                        'controller'    => 'Roles',
+                        'action'        => 'index',
+                    ),
+                ),
+                'may_terminate' => true,
+                    'child_routes' => array(
+                    'default' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/[:action[/:id]]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'controllers' => array(
+        'invokables' => array(
+            'SamUser\Controller\Users' => 'SamUser\Controller\UsersController',
+            'SamUser\Controller\Rest' => 'SamUser\Controller\RestController',
+            'SamUser\Controller\Roles' => 'SamUser\Controller\RolesController',
+            'SamUser\Controller\RoleRest' => 'SamUser\Controller\RoleRestController',
+        ),
+    ),
+    'view_manager' => array(
+        'template_path_stack' => array(
+            __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+            'ViewJsonStrategy',
+        ),
+    ),
     'doctrine' => array(
         'driver' => array(
             // overriding zfc-user-doctrine-orm's config
@@ -36,3 +108,5 @@ return array(
         ),
     ),
 );
+
+
