@@ -18,7 +18,16 @@
         </h4>
       </div>
       <div id="description" class="panel-collapse collapse in">
+<<<<<<< HEAD
 
+=======
+        <div class="panel-body">
+          <table class="details">
+            <tr><td><?php echo $this->translate('Name'); ?></td><td><div ui-editable ng-model="currentRole.roleId" ng-change="update" ng-transclude>{{currentRole.roleId}}</div></td></tr>
+            <tr><td><?php echo $this->translate('Parent'); ?></td><td><div ui-editable ng-model="currentRole.parent" type="select" data="{{availableRoles}}" ng-change="update" ng-transclude>{{currentRole.parent.roleId}}</div></td></tr>
+            </table>
+        </div>
+>>>>>>> origin/master
       </div>
     </div>
 </div>

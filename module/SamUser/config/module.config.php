@@ -28,6 +28,21 @@ return array(
                     ),
                 ),
             ),
+<<<<<<< HEAD
+=======
+            'usersApi' => array(
+                'type'    => 'Segment',
+                'options' => array(
+                    'route'    => '/api/users[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'SamUser\Controller\Rest',
+                    ),
+                ),
+            ),
+>>>>>>> origin/master
             'roles' => array(
                 'type'    => 'Literal',
                 'options' => array(
@@ -39,7 +54,11 @@ return array(
                     ),
                 ),
                 'may_terminate' => true,
+<<<<<<< HEAD
                     'child_routes' => array(
+=======
+                'child_routes' => array(
+>>>>>>> origin/master
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -54,6 +73,21 @@ return array(
                     ),
                 ),
             ),
+<<<<<<< HEAD
+=======
+            'rolesApi' => array(
+                'type'    => 'Segment',
+                'options' => array(
+                    'route'    => '/api/roles[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'SamUser\Controller\RoleRest',
+                    ),
+                ),
+            ),
+>>>>>>> origin/master
         ),
     ),
     'controllers' => array(
@@ -72,6 +106,10 @@ return array(
             'ViewJsonStrategy',
         ),
     ),
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
     'doctrine' => array(
         'driver' => array(
             // overriding zfc-user-doctrine-orm's config
@@ -102,8 +140,18 @@ return array(
         'role_providers'        => array(
             // using an object repository (entity repository) to load all roles into our ACL
             'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' => array(
-                'object_manager'    => 'doctrine.entitymanager.orm_default',
+                'object_manager'    => 'doctrine.entity_manager.orm_default',
                 'role_entity_class' => 'SamUser\Entity\Role',
+            ),
+        ),
+    ),
+    'translator' => array(
+        'locale' => 'en_US',
+        'translation_file_patterns' => array(
+            array(
+                'type'     => 'gettext',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%s.mo'
             ),
         ),
     ),
