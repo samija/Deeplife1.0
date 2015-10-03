@@ -1,15 +1,31 @@
 <?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
 
 namespace SamUser;
 
-use Zend\ModuleManager\Feature;
-use Zend\Loader;
-use Zend\EventManager\EventInterface;
+use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch;
 
 class Module
 {
+    public function onBootstrap(MvcEvent $e)
+    {
+        $eventManager        = $e->getApplication()->getEventManager();
+        $moduleRouteListener = new ModuleRouteListener();
+        $moduleRouteListener->attach($eventManager);
+    }
+
+    public function getConfig()
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+
     public function getAutoloaderConfig()
     {
         return array(
@@ -19,45 +35,5 @@ class Module
                 ),
             ),
         );
-    }
-
-    public function getConfig()
-    {
-        return include __DIR__ . '/config/module.config.php';
-    }
-
-    public function onBootstrap(MvcEvent $e)
-    {
-        $app = $e->getParam('application');
-        $em  = $app->getEventManager();
-
-        $em->attach(MvcEvent::EVENT_DISPATCH, array($this, 'selectLayoutBasedOnRoute'));
-    }
-
-    /**
-     * Select the admin layout based on route name
-     *
-     * @param  MvcEvent $e
-     * @return void
-     */
-    public function selectLayoutBasedOnRoute(MvcEvent $e)
-    {
-        $app    = $e->getParam('application');
-        $sm     = $app->getServiceManager();
-        $config = $sm->get('config');
-
-        $match      = $e->getRouteMatch();
-        $controller = $e->getTarget();
-
-        if (!$match instanceof RouteMatch
-            || 0 !== strpos($match->getMatchedRouteName(), 'zfcuser/login')
-            || $controller->getEvent()->getResult()->terminate()
-        ) {
-   
-            return;
-        }
-
-        $layout     = 'layout/layout-login';
-        $controller->layout($layout);
     }
 }

@@ -3,16 +3,11 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-$translator = new \Zend\I18n\Translator\Translator;
-
-// Get current session language
-$language = new \Zend\Session\Container('language');
-$locale = isset($language->current) ? $language->current : "fr_CA";
-$redirect = isset($_SERVER) && isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : "/";
+namespace Application;
 
 return array(
     'router' => array(
@@ -46,13 +41,12 @@ return array(
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/[:action]',
+                            'route'    => '/[:controller[/:action]]',
                             'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
-                                '__NAMESPACE__' => 'Application\Controller',
-                                'controller'    => 'Index',
                             ),
                         ),
                     ),
@@ -62,31 +56,26 @@ return array(
     ),
     'service_manager' => array(
         'abstract_factories' => array(
-           // 'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-           // 'Zend\Log\LoggerAbstractServiceFactory',
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
         ),
         'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
-            'secondary_navigation' => 'Application\Service\SecondaryNavigationFactory',
-        ),
-        'invokables' => array(
-            'EntityForm' => 'Application\Service\EntityForm',
+            'translator' => 'Zend\Mvc\Service\TranslatorServiceFactory',
         ),
     ),
     'translator' => array(
-        //'locale' => 'fr_CA',
+        'locale' => 'en_US',
         'translation_file_patterns' => array(
             array(
                 'type'     => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo'
+                'pattern'  => '%s.mo',
             ),
         ),
     ),
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
+            'Application\Controller\Index' => Controller\IndexController::class
         ),
     ),
     'view_manager' => array(
@@ -105,57 +94,10 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
-    'view_helpers' => array(
-        'invokables' => array(
-            'bootstrap' => 'Application\View\Helper\Bootstrap',
-            'formelement' => 'Application\Form\View\Helper\FormElement',
-            'formdate' => 'Application\Form\View\Helper\FormDate',
-            'formtypeahead' => 'Application\Form\View\Helper\FormTypeahead',
-        ),
-    ),
     // Placeholder for console routes
     'console' => array(
         'router' => array(
             'routes' => array(
-            ),
-        ),
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
-                'label' => 'Data',
-                'uri' => '#',
-                'class' => 'category-title',
-            ),
-            array(
-                'label' => 'Taxes',
-                'route' => 'taxes',
-                'pages' => array(
-                    array(
-                        'label' => 'Tax Details',
-                        'route' => 'taxes/default',
-                        'action' => 'details',
-                    ),
-                ),
-            ),
-        ),
-        'secondary' => array(
-            array(
-                'label' => 'Administration',
-                'uri' => '#',
-                'class' => 'top-menu-category',
-            ),
-            array(
-                'label' => 'Users',
-                'route' => 'users',
-            ),
-            array(
-                'label' => 'Roles',
-                'route' => 'roles',
-            ),
-            array(
-                'label' => 'Change Language',
-                'uri' => '/application/language?to=' . ($locale =='en_US'  ? 'fr_CA' : 'en_US' ) . '&redirect=' . $redirect,
             ),
         ),
     ),
